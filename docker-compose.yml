@@ -1,0 +1,37 @@
+version: '2.1'
+
+
+volumes:
+    nginx_logs: {}
+
+services:
+  nginx:
+    image: nginx:1.19.10
+    container_name: nginx
+    volumes:
+      - nginx_logs:/var/log/nginx
+      - ./nginx:/etc/nginx/ # nginx.conf:ro
+    expose:
+      - 80
+    ports:
+      - 8080:80
+
+  # promtail:
+  #   container_name: grafana/promtail:2.2.1
+  #   volumes:
+  #     - ./promtail:/etc/promtail
+  #     - nginx_logs:/var/log/nginx
+  #   command:
+  #     - '--config.file=/etc/promtail/config.yml'
+
+  testserver:
+    image: python:3
+    container_name: testserver
+    volumes:
+      - ./server:/server
+    working_dir: /server
+    command:
+      - python 
+      - server.py
+    expose:
+      - 8000
